@@ -1,0 +1,40 @@
+﻿@page "/"
+@rendermode pageRenderMode
+<div class="shikaku-page">
+    @if (ShikakuBoard is not null)
+    {
+        <div class="shikaku-board" style="--cols:@(COLS_NUM); --rows:@(ROWS_NUM)" >
+            @foreach (var row in ShikakuBoard.Grid)
+            {
+                foreach (var cell in row)
+                {
+                    <div class="shikaku-cell @cell.Class"
+                         style="color: white;background-color: @(cell.Color); cursor: pointer;"
+                         @onmouseenter="@(() => HandleHover(cell))"
+                         @onmouseup="@(() => HandleMouseUp(cell))"
+                         @onmousedown="@(() => HandleClick(cell))">
+                        @cell.Content
+                        @if(!string.IsNullOrEmpty(cell.AdditionalContent))
+                        {
+                            string x = $"{(cell.X * 28) + 5} px";
+                            string y = $"{(cell.Y * 28) + 5} px";
+
+                            decimal size = 0.8m + 0.05m * (CurrentRect!.Area);
+
+
+                            <div style="color: white; font-weight: bolder; font-size: @($"{size}"))rem; padding: 1px;  position: relative; left: @(x); top: @(y); border: 2px solid white">
+                                @cell.AdditionalContent
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+@code
+{
+    private static IComponentRenderMode pageRenderMode =
+    new InteractiveServerRenderMode(prerender: false);
+}

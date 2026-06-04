@@ -1,0 +1,200 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Space+Mono:wght@400;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #111520;
+}
+
+.shikaku-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #111520;
+  padding: 32px 16px 48px;
+  font-family: 'Space Mono', monospace;
+}
+
+/* ── Header ── */
+.puzzle-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  max-width: calc(var(--cols) * var(--cell-size) + 4px);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.puzzle-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #e8dcc8;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+.puzzle-title small {
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: #555d7a;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.puzzle-hint {
+  font-size: 11px;
+  color: #3e4560;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  align-self: flex-end;
+}
+
+/* ── Board wrapper ── */
+.board-wrapper {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 160px);
+  padding: 3px;
+  background: #0d1018;
+  border: 1px solid #1e2638;
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px #080c14,
+    0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* ── Grid ── */
+.shikaku-board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell-size, 32px));
+  grid-auto-rows: var(--cell-size, 32px);
+  background: #141820;
+  flex-shrink: 0;
+}
+
+/* ── Cells ── */
+.shikaku-cell {
+  width: var(--cell-size, 32px);
+  height: var(--cell-size, 32px);
+  border: 0.5px solid #1e2535;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e8dcc8;
+  cursor: crosshair;
+  user-select: none;
+  position: relative;
+  transition: background 0.08s;
+  background: #141820;
+}
+
+/* number clue indicator */
+.shikaku-cell:not(:empty)::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* hover on empty cells */
+.shikaku-cell:not(.rect):hover {
+  background: #1c2235;
+}
+
+/* placed rect cells */
+.shikaku-cell.rect {
+  border: 0.5px solid rgba(255,255,255,0.15);
+}
+
+/* ── Rect size overlay (shown while dragging) ── */
+.rect-size-overlay {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: rgba(197,169,106,0.92);
+  color: #111520;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+/* ── Footer bar ── */
+.puzzle-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: calc(var(--cols) * var(--cell-size) + 4px);
+  margin-top: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  background: #1a1f2e;
+  color: #6a7090;
+  border: 1px solid #252c3f;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.btn:hover {
+  color: #c5a96a;
+  border-color: #c5a96a;
+  background: #1e2535;
+}
+
+.btn-primary {
+  background: #c5a96a;
+  color: #111520;
+  border-color: #c5a96a;
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  background: #d4b97a;
+  border-color: #d4b97a;
+  color: #111520;
+}
+
+/* ── Responsive cell sizing ── */
+@media (max-width: 900px) {
+  .shikaku-board { --cell-size: 26px; }
+  .shikaku-cell { font-size: 10px; }
+}
+
+@media (max-width: 600px) {
+  .shikaku-board { --cell-size: 20px; }
+  .shikaku-cell { font-size: 9px; }
+  .puzzle-hint { display: none; }
+}
