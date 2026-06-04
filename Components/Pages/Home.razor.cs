@@ -8,8 +8,8 @@ namespace Karolinaku.Components.Pages
         [Inject]
         private NavigationManager NavigationManager { get; set; } = null!;
 
-        private const int ROWS_NUM = 30;
-        private const int COLS_NUM = 40;
+        private const int ROWS_NUM = 10;
+        private const int COLS_NUM = 10;
         private ShikakuBoard ShikakuBoard { get; set; } = new(ROWS_NUM, COLS_NUM);
 
 
