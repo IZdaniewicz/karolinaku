@@ -1,3 +1,6 @@
 ﻿@page "/win"
+@inject NavigationManager nav
 
 <h1>JEEEEEEEEJ WYGRANAAA !!!!</h1>
+
+<button @onclick="@(() => nav.NavigateTo("/"))">OD NOWA</button>
