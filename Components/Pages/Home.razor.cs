@@ -239,7 +239,7 @@ namespace Karolinaku.Components.Pages
 
         public const string DefaultColor = "#141820";
 
-        public string Class => Color == DefaultColor ? string.Empty : ".rect";
+        public string Class => Color == DefaultColor ? string.Empty : "rect";
 
         public int ContentInt => !string.IsNullOrEmpty(Content) ? Convert.ToInt32(Content) : -1;
 

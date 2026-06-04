@@ -1,3 +1,13 @@
+html, body {
+    min-height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top left, rgba(69, 92, 160, 0.24), transparent 34rem),
+        radial-gradient(circle at bottom right, rgba(197, 169, 106, 0.16), transparent 30rem),
+        #0d1018;
+}
+
 h1:focus {
     outline: none;
 }

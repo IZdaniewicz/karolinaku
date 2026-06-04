@@ -4,197 +4,148 @@
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background: #111520;
-}
-
 .shikaku-page {
-  min-height: 100vh;
+  --page-gap: clamp(0.5rem, 1.6vw, 1.5rem);
+  --board-frame: clamp(2px, 0.45vmin, 6px);
+  --board-border: 1px;
+  min-height: 100dvh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #111520;
-  padding: 32px 16px 48px;
-  font-family: 'Space Mono', monospace;
-}
-
-/* ── Header ── */
-.puzzle-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  width: 100%;
-  max-width: calc(var(--cols) * var(--cell-size) + 4px);
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.puzzle-title {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: #e8dcc8;
-  letter-spacing: 0.06em;
-  line-height: 1.2;
-}
-
-.puzzle-title small {
-  display: block;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.22em;
-  color: #555d7a;
-  margin-top: 4px;
-  text-transform: uppercase;
-}
-
-.puzzle-hint {
-  font-size: 11px;
-  color: #3e4560;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  align-self: flex-end;
-}
-
-/* ── Board wrapper ── */
-.board-wrapper {
-  position: relative;
-  overflow-x: auto;
-  overflow-y: auto;
-  max-width: 100%;
-  max-height: calc(100vh - 160px);
-  padding: 3px;
-  background: #0d1018;
-  border: 1px solid #1e2638;
-  border-radius: 4px;
-  box-shadow:
-    0 0 0 1px #080c14,
-    0 20px 60px rgba(0,0,0,0.6);
-}
-
-/* ── Grid ── */
-.shikaku-board {
   display: grid;
-  grid-template-columns: repeat(var(--cols), var(--cell-size, 32px));
-  grid-auto-rows: var(--cell-size, 32px);
-  background: #141820;
-  flex-shrink: 0;
+  place-items: center;
+  padding: var(--page-gap);
+  color: #e8dcc8;
+  font-family: 'Space Mono', monospace;
 }
 
-/* ── Cells ── */
+.game-shell {
+  --available-width: calc(100vw - (2 * var(--page-gap)));
+  --available-height: calc(100dvh - (2 * var(--page-gap)));
+  --board-chrome: calc((2 * var(--board-frame)) + (2 * var(--board-border)));
+  --cell-size: min(
+    calc((var(--available-width) - var(--board-chrome)) / var(--cols)),
+    calc((var(--available-height) - var(--board-chrome)) / var(--rows))
+  );
+  width: var(--available-width);
+  height: var(--available-height);
+  display: grid;
+  place-items: center;
+}
+
+.board-card {
+  box-sizing: content-box;
+  width: calc(var(--cell-size) * var(--cols));
+  height: calc(var(--cell-size) * var(--rows));
+  max-width: calc(100% - var(--board-chrome));
+  max-height: calc(100% - var(--board-chrome));
+  padding: var(--board-frame);
+  border: var(--board-border) solid rgba(142, 157, 198, 0.28);
+  border-radius: clamp(8px, 1.2vmin, 16px);
+  background: linear-gradient(145deg, rgba(19, 24, 36, 0.96), rgba(9, 12, 19, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.035) inset,
+    0 22px 70px rgba(0, 0, 0, 0.62);
+}
+
+.shikaku-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell-size));
+  grid-template-rows: repeat(var(--rows), var(--cell-size));
+  width: calc(var(--cell-size) * var(--cols));
+  height: calc(var(--cell-size) * var(--rows));
+  overflow: hidden;
+  border-radius: clamp(6px, 0.9vmin, 12px);
+  background: #141820;
+  touch-action: none;
+}
+
 .shikaku-cell {
-  width: var(--cell-size, 32px);
-  height: var(--cell-size, 32px);
-  border: 0.5px solid #1e2535;
-  box-sizing: border-box;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid rgba(122, 137, 176, 0.18);
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  color: #fff4df;
   font-family: 'Space Mono', monospace;
-  font-size: 12px;
+  font-size: clamp(0.48rem, calc(var(--cell-size) * 0.42), 1.2rem);
   font-weight: 700;
-  color: #e8dcc8;
+  line-height: 1;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.75);
   cursor: crosshair;
   user-select: none;
-  position: relative;
-  transition: background 0.08s;
-  background: #141820;
+  transition: filter 0.08s ease, background-color 0.08s ease;
 }
 
-/* number clue indicator */
 .shikaku-cell:not(:empty)::before {
   content: '';
   position: absolute;
-  inset: 3px;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 2px;
+  inset: max(2px, calc(var(--cell-size) * 0.12));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: max(2px, calc(var(--cell-size) * 0.08));
+  background: rgba(255, 255, 255, 0.035);
   pointer-events: none;
 }
 
-/* hover on empty cells */
-.shikaku-cell:not(.rect):hover {
-  background: #1c2235;
+.shikaku-cell:hover {
+  filter: brightness(1.22) saturate(1.1);
 }
 
-/* placed rect cells */
 .shikaku-cell.rect {
-  border: 0.5px solid rgba(255,255,255,0.15);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
-/* ── Rect size overlay (shown while dragging) ── */
-.rect-size-overlay {
+.current-rect-label {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  background: rgba(197,169,106,0.92);
-  color: #111520;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 1px 5px;
-  border-radius: 2px;
+  left: calc(var(--rect-x) * var(--cell-size));
+  top: calc(var(--rect-y) * var(--cell-size));
+  width: calc(var(--rect-cols) * var(--cell-size));
+  height: calc(var(--rect-rows) * var(--cell-size));
+  display: grid;
+  place-items: center;
+  z-index: 5;
   pointer-events: none;
-  z-index: 10;
-  letter-spacing: 0;
-  white-space: nowrap;
-}
-
-/* ── Footer bar ── */
-.puzzle-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: calc(var(--cols) * var(--cell-size) + 4px);
-  margin-top: 16px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.btn {
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 8px 18px;
-  background: #1a1f2e;
-  color: #6a7090;
-  border: 1px solid #252c3f;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-}
-
-.btn:hover {
-  color: #c5a96a;
-  border-color: #c5a96a;
-  background: #1e2535;
-}
-
-.btn-primary {
-  background: #c5a96a;
   color: #111520;
-  border-color: #c5a96a;
+  font-size: clamp(0.72rem, calc(var(--cell-size) * 0.72), 2.1rem);
   font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  text-shadow: none;
 }
 
-.btn-primary:hover {
-  background: #d4b97a;
-  border-color: #d4b97a;
-  color: #111520;
+.current-rect-label::before {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: max(4px, calc(var(--cell-size) * 0.16));
+  box-shadow:
+    0 0 0 1px rgba(17, 21, 32, 0.55),
+    0 10px 26px rgba(0, 0, 0, 0.22),
+    inset 0 0 22px rgba(255, 255, 255, 0.08);
 }
 
-/* ── Responsive cell sizing ── */
-@media (max-width: 900px) {
-  .shikaku-board { --cell-size: 26px; }
-  .shikaku-cell { font-size: 10px; }
+.current-rect-label span {
+  min-width: min(82%, max(2.4rem, calc(var(--cell-size) * 2.3)));
+  min-height: min(72%, max(1.7rem, calc(var(--cell-size) * 1.35)));
+  display: inline-grid;
+  place-items: center;
+  padding: 0.18em 0.38em;
+  border-radius: 999px;
+  background: rgba(255, 244, 223, 0.9);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(4px);
 }
 
-@media (max-width: 600px) {
-  .shikaku-board { --cell-size: 20px; }
-  .shikaku-cell { font-size: 9px; }
-  .puzzle-hint { display: none; }
+@supports not (height: 100dvh) {
+  .shikaku-page {
+    min-height: 100vh;
+  }
+
+  .game-shell {
+    --available-height: calc(100vh - (2 * var(--page-gap)));
+  }
 }
